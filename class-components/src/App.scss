@@ -1,0 +1,32 @@
+@use './styles/variables' as v;
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  font-family: v.$font-primary;
+}
+
+.items-wrapper {
+  min-height: 100vh;
+  background-color: v.$primary-black;
+  display: flex;
+  flex-direction: column;
+}
+
+.items-search {
+  border: 1px solid v.$primary-blue;
+  padding: 10px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.items-result {
+  border: 1px solid v.$primary-blue;
+  padding: 10px;
+  flex: 1;
+  overflow-y: auto;
+}
