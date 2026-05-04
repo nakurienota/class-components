@@ -1,13 +1,12 @@
-import type {Mappable} from "../types";
+import type { Mappable } from '../types';
 
 export class RestHandler {
-    async get<T>(url: string, Model: Mappable<T>): Promise<T> {
-        const response: Response = await fetch(url);
+  async get<T>(url: string, Model: Mappable<T>): Promise<T> {
+    const response: Response = await fetch(url);
 
-        if (!response.ok)
-            throw new Error(`HTTP Error: ${response.status}`);
+    if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
-        const data = await response.json();
-        return Model.fromJson(data);
-    }
+    const data = await response.json();
+    return Model.fromJson(data);
+  }
 }
