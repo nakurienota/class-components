@@ -1,0 +1,39 @@
+@use '../../styles/variables' as v;
+
+.search {
+  display: flex;
+  gap: 12px;
+
+  input {
+    flex: 1;
+    padding: 10px 16px;
+    background-color: v.$primary-black;
+    border: 1px solid v.$primary-gray;
+    border-radius: v.$border-radius-base;
+    color: v.$primary-white;
+    font-family: v.$font-primary;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      border-color: v.$primary-blue;
+    }
+  }
+
+  button {
+    background-color: v.$primary-blue;
+    color: v.$primary-black;
+    height: 40px;
+    border: none;
+    border-radius: v.$border-radius-base;
+    font-family: v.$font-primary;
+    font-size: 14px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.65;
+    }
+  }
+}

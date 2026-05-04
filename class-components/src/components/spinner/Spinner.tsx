@@ -2,7 +2,7 @@ import { Component } from 'react';
 
 class Spinner extends Component {
     render() {
-        return <div className="spinner">Loading...</div>;
+        return <div className="spinner">Imitating loading...</div>;
     }
 }
 

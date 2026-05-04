@@ -3,8 +3,9 @@ import {Component} from "react";
 import type {ApplicationContext, ItemDisplay} from "./types";
 import {RestHandler} from "./service/RestHandler.tsx";
 import {PokemonConverter} from "./core/converter/PokemonConverter.tsx";
-import Spinner from "./components/spinner/spinner.tsx";
-import ItemList from "./components/item-list/ItemList.tsx";
+import Search from "./components/search/Search.tsx";
+import ErrorBoundary from "./core/error/ErrorBoundary.tsx";
+import ResultSection from "./components/result/ResultSection.tsx";
 
 class App extends Component<object, ApplicationContext> {
 
@@ -20,27 +21,20 @@ class App extends Component<object, ApplicationContext> {
             isLoading: false,
             error: null,
             search: localStorage.getItem('inMemory') ?? '',
+            testErrorThrow: false
         };
     }
 
-    state: ApplicationContext = {
-        items: [],
-        isLoading: false,
-        error: null,
-        search: localStorage.getItem('inMemory') ?? '',
-    };
-
     componentDidMount() {
-        console.log("data loading");
         this.loadData(this.state.search);
     }
 
     loadData = async (term: string) => {
-        this.setState({isLoading: true, error: null});
+        this.setState({isLoading: true, error: null, testErrorThrow: false});
         try {
+            await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000 + 500));
             const url: string = term ? this.POKEMON_API + term.toLowerCase() : this.POKEMON_API_LIMIT;
             const items: ItemDisplay[] = await this.restHandler.get(url, PokemonConverter);
-            console.log("items " + items)
             this.setState({items, isLoading: false});
         } catch (e) {
             const error: string = e instanceof Error ? e.message : 'Unknown error';
@@ -48,20 +42,31 @@ class App extends Component<object, ApplicationContext> {
         }
     };
 
+    handleSearch = (term: string) => {
+        if (term === this.state.search && !this.state.error) return;
+        this.setState({search: term, testErrorThrow: false});
+        this.loadData(term);
+    };
+
+    throwError = () => {
+        this.setState({testErrorThrow: true});
+    };
+
     render() {
-        const {items, isLoading, error} = this.state;
+        const {items, isLoading, error, testErrorThrow, search} = this.state;
 
         return (
             <div className="items-wrapper">
                 <section className="items-search">
-                    <p>SEARCH SECTION</p>
+                    <Search onSearch={this.handleSearch}></Search>
                 </section>
                 <section className="items-result">
-                    {isLoading && <Spinner/>}
-                    {error && <p className="error">{error}</p>}
-                    {!isLoading && !error && <ItemList items={items}/>}
-                    <p>RESULT SECTION</p>
+                    <ErrorBoundary key={search}>
+                        <ResultSection items={items} isLoading={isLoading} error={error} shouldThrow={testErrorThrow}
+                        />
+                    </ErrorBoundary>
                 </section>
+                <button className="error-btn" onClick={this.throwError}>Test error</button>
             </div>
         )
     }

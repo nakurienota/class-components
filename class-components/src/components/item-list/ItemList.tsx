@@ -7,7 +7,6 @@ class ItemList extends Component<{ items: ItemDisplay[] }> {
     render() {
         return (
             <div className="item-list">
-                <p>ITEMS LIST</p>
                 {this.props.items.map((el: ItemDisplay) => (
                     <Item key={el.name} item={el} />
                 ))}

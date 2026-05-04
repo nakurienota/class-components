@@ -1,1 +1,9 @@
-@use '../../styles/variables' as *;
+@use '../../styles/variables' as v;
+
+.item-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 24px;
+  background-color: v.$primary-black;
+}
