@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import type { ItemDisplay } from '../../types';
-import Item from '../Item/Item.tsx';
+import Item from '../item/Item.tsx';
 import './ItemList.scss';
 
 class ItemList extends Component<{ items: ItemDisplay[] }> {
