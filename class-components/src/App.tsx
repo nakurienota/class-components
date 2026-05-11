@@ -29,12 +29,15 @@ class App extends Component<object, ApplicationContext> {
     this.loadData(this.state.search);
   }
 
+  private delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
   loadData = async (term: string) => {
     this.setState({ isLoading: true, error: null, testErrorThrow: false });
     try {
-      await new Promise((resolve) =>
-        setTimeout(resolve, Math.random() * 1000 + 500)
-      );
+      await this.delay(Math.random() * 1000 + 500);
+
       const url: string = term
         ? this.POKEMON_API + term.toLowerCase()
         : this.POKEMON_API_LIMIT;

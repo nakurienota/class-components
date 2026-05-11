@@ -5,7 +5,8 @@ import App from '../App';
 
 describe('App', () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
+    vi.spyOn(App.prototype as any, 'delay')
+      .mockResolvedValue(undefined);
     localStorage.clear();
   });
 
@@ -24,38 +25,30 @@ describe('App', () => {
     });
   });
 
-  it('error should be rendered when 500 appears', async () => {
+  it('error boundary should render on 500 error', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {
+    });
+
     vi.spyOn(globalThis, 'fetch').mockResolvedValue({ ok: false, status: 500 } as Response);
 
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText('HTTP Error: 500')).toBeInTheDocument();
+      expect(screen.getByText('Something goes wrong')).toBeInTheDocument();
     });
+    expect(screen.getByText('HTTP Error: 500')).toBeInTheDocument();
   });
 
   it('data should be render when search is invoked', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        name: 'test',
-        base_experience: 1,
-      }),
-    } as Response);
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({ ok: true, json: async () => ({ results: [] }) } as Response)
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ name: 'test', base_experience: 1 }) } as Response);
 
     render(<App />);
-
     const input = screen.getByRole('textbox');
-    const button = screen.getByRole('button', {
-      name: /search/i,
-    });
+    const button = screen.getByRole('button', { name: /search/i });
 
-    fireEvent.change(input, {
-      target: { value: 'test' },
-    });
-
+    fireEvent.change(input, { target: { value: 'test' } });
     fireEvent.click(button);
-
     await waitFor(() => {
       expect(screen.getByText('test')).toBeInTheDocument();
     });
@@ -65,12 +58,7 @@ describe('App', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {
     });
 
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        results: [],
-      }),
-    } as Response);
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue({ ok: true, json: async () => ({ results: [] }) } as Response);
 
     render(<App />);
 
