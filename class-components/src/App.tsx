@@ -29,7 +29,7 @@ class App extends Component<object, ApplicationContext> {
     this.loadData(this.state.search);
   }
 
-  private delay(ms: number): Promise<void> {
+  delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 

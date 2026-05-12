@@ -1,11 +1,12 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import App from '../App';
+import userEvent from '@testing-library/user-event';
 
 describe('App', () => {
   beforeEach(() => {
-    vi.spyOn(App.prototype as any, 'delay')
+    vi.spyOn(App.prototype as typeof App.prototype, 'delay')
       .mockResolvedValue(undefined);
     localStorage.clear();
   });
@@ -47,8 +48,9 @@ describe('App', () => {
     const input = screen.getByRole('textbox');
     const button = screen.getByRole('button', { name: /search/i });
 
-    fireEvent.change(input, { target: { value: 'test' } });
-    fireEvent.click(button);
+    await userEvent.type(input, 'test');
+    await userEvent.click(button);
+
     await waitFor(() => {
       expect(screen.getByText('test')).toBeInTheDocument();
     });
@@ -62,7 +64,7 @@ describe('App', () => {
 
     render(<App />);
 
-    fireEvent.click(screen.getByRole('button', { name: /test error/i }));
+    await userEvent.click(screen.getByRole('button', { name: /test error/i }));
     await waitFor(() => {
       expect(screen.getByText('Something goes wrong')).toBeInTheDocument();
     });

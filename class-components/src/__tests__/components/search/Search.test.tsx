@@ -1,4 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import Search from '../../../components/search/Search';
@@ -17,17 +18,18 @@ describe('Search', () => {
     expect(input).toHaveValue('test');
   });
 
-  it('updates input value on change', () => {
-    render(<Search onSearch={() => {}} />);
+  it('updates input value on change', async () => {
+    render(<Search onSearch={() => {
+    }} />);
 
     const input = screen.getByRole('textbox');
 
-    fireEvent.change(input, { target: { value: 'test' } });
+    await userEvent.type(input, 'test');
 
     expect(input).toHaveValue('test');
   });
 
-  it('calls onSearch and saves to localStorage on button click', () => {
+  it('calls onSearch and saves to localStorage on button click', async () => {
     const onSearch = vi.fn();
 
     render(<Search onSearch={onSearch} />);
@@ -35,22 +37,22 @@ describe('Search', () => {
     const input = screen.getByRole('textbox');
     const button = screen.getByRole('button', { name: /search/i });
 
-    fireEvent.change(input, { target: { value: '  test  ' } });
-    fireEvent.click(button);
+    await userEvent.type(input, 'test');
+    await userEvent.click(button);
 
     expect(onSearch).toHaveBeenCalledWith('test');
     expect(localStorage.getItem('inMemory')).toBe('test');
   });
 
-  it('triggers search on Enter key', () => {
+  it('triggers search on Enter key', async () => {
     const onSearch = vi.fn();
 
     render(<Search onSearch={onSearch} />);
 
     const input = screen.getByRole('textbox');
 
-    fireEvent.change(input, { target: { value: 'test' } });
-    fireEvent.keyDown(input, { key: 'Enter' });
+    await userEvent.type(input, 'test');
+    await userEvent.keyboard('{Enter}');
 
     expect(onSearch).toHaveBeenCalledWith('test');
   });
