@@ -1,0 +1,30 @@
+@use '../../styles/variables' as v;
+
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  color: v.$primary-white;
+  font-family: v.$font-primary;
+
+  h2 {
+    font-size: 24px;
+    color: v.$primary-red;
+    margin-bottom: 12px;
+  }
+
+  p {
+    font-size: 14px;
+    color: v.$primary-light-gray;
+  }
+}
+
+.api-error {
+  color: v.$primary-red;
+  font-family: v.$font-primary;
+  font-size: 14px;
+  text-align: center;
+  padding: 24px;
+}

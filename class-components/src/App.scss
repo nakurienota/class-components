@@ -1,0 +1,62 @@
+@use './styles/variables' as v;
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  font-family: v.$font-primary;
+}
+
+.items-wrapper {
+  min-height: 100vh;
+  background-color: v.$primary-black;
+  display: flex;
+  flex-direction: column;
+}
+
+.items-search {
+  border: 1px solid v.$primary-blue;
+  padding: 10px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.items-result {
+  border: 1px solid v.$primary-blue;
+  padding: 10px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1px solid v.$primary-blue;
+  border-radius: 8px;
+  background: v.$alt-black;
+  margin-bottom: 2rem;
+  box-sizing: border-box;
+}
+
+.error-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 10px;
+  padding: 10px 20px;
+  background-color: v.$primary-red;
+  color: v.$primary-white;
+  border: none;
+  border-radius: v.$border-radius-base;
+  font-family: v.$font-primary;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.85;
+  }
+}
