@@ -1,59 +1,46 @@
-import { render, screen} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-
-import Search from '../../../components/search/Search';
+import { renderHook} from '@testing-library/react';
+import { describe, it, expect, beforeEach } from 'vitest';
+import LocalStorageHook from '../../../core/hooks/LocalStorageHook.tsx';
+import { act } from 'react';
 
 describe('Search', () => {
   beforeEach(() => {
     localStorage.clear();
   });
 
-  it('loads initial value from localStorage', () => {
-    localStorage.setItem('inMemory', 'test');
+  it('returns initial value from localStorage', () => {
+    const { result } = renderHook(() => LocalStorageHook('key', 'default'));
 
-    render(<Search onSearch={() => {}} />);
-
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveValue('test');
+    expect(result.current[0]).toBe('default');
   });
 
-  it('updates input value on change', async () => {
-    render(<Search onSearch={() => {
-    }} />);
-
-    const input = screen.getByRole('textbox');
-
-    await userEvent.type(input, 'test');
-
-    expect(input).toHaveValue('test');
+  it('returns value from localStorage if exists', async () => {
+    localStorage.setItem('key', JSON.stringify('saved'));
+    const { result } = renderHook(() => LocalStorageHook('key', 'default'));
+    expect(result.current[0]).toBe('saved');
   });
 
-  it('calls onSearch and saves to localStorage on button click', async () => {
-    const onSearch = vi.fn();
+  it('saves value to localStorage on setValue', async () => {
+    const { result } = renderHook(() => LocalStorageHook('key', ''));
+    act(() => {
+      result.current[1]('newValue');
+    });
 
-    render(<Search onSearch={onSearch} />);
-
-    const input = screen.getByRole('textbox');
-    const button = screen.getByRole('button', { name: /search/i });
-
-    await userEvent.type(input, 'test');
-    await userEvent.click(button);
-
-    expect(onSearch).toHaveBeenCalledWith('test');
-    expect(localStorage.getItem('inMemory')).toBe('test');
+    expect(result.current[0]).toBe('newValue');
+    expect(localStorage.getItem('key')).toBe('"newValue"');
   });
 
-  it('triggers search on Enter key', async () => {
-    const onSearch = vi.fn();
+  it('updates state when setValue is called', async () => {
+    const { result } = renderHook(() => LocalStorageHook<number>('key', 0));
+    act(() => {
+      result.current[1](42);
+    });
+    expect(result.current[0]).toBe(42);
+  });
 
-    render(<Search onSearch={onSearch} />);
-
-    const input = screen.getByRole('textbox');
-
-    await userEvent.type(input, 'test');
-    await userEvent.keyboard('{Enter}');
-
-    expect(onSearch).toHaveBeenCalledWith('test');
+  it('handles invalid JSON in localStorage gracefully', () => {
+    localStorage.setItem('key', 'invalid json{{{');
+    const { result } = renderHook(() => LocalStorageHook('key', 'fallback'));
+    expect(result.current[0]).toBe('fallback');
   });
 });

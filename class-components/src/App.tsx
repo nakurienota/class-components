@@ -7,6 +7,7 @@ import Search from './components/search/Search.tsx';
 import ErrorBoundary from './core/error/ErrorBoundary.tsx';
 import ResultSection from './components/result/ResultSection.tsx';
 import { delay } from './core/utils/DummyDelay.tsx';
+import LocalStorageHook from './core/hooks/LocalStorageHook.tsx';
 
 const restHandler = new RestHandler();
 const POKEMON_API = 'https://pokeapi.co/api/v2/pokemon/';
@@ -16,7 +17,7 @@ function App() {
   const [items, setItems] = useState<ItemDisplay[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [name, setName] = useState<string>(() => localStorage.getItem('inMemory') ?? '');
+  const [name, setName] = LocalStorageHook<string>('inMemory', '');
   const [testErrorThrow, setTestErrorThrow] = useState<boolean>(false);
 
   useEffect(() => {
@@ -42,7 +43,7 @@ function App() {
     if (name === input && !error) return;
     setName(input);
     setTestErrorThrow(false);
-  }, [name, error]);
+  }, [name, error, setName]);
 
   const throwError = () => setTestErrorThrow(true);
 

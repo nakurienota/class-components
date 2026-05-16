@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { useState } from 'react';
 import type { SearchProperties } from '../../types';
+import LocalStorageHook from '../../core/hooks/LocalStorageHook'
 import './Search.scss';
 
 function Search({ onSearch }: Readonly<SearchProperties>) {
   const STORAGE: string = 'inMemory';
-  const [value, setValue] = useState<string>(() => localStorage.getItem(STORAGE) ?? '',);
+  const [value, setValue] = LocalStorageHook<string>(STORAGE, '');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
