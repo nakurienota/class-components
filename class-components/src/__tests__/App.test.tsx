@@ -4,10 +4,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../App';
 import userEvent from '@testing-library/user-event';
 
+vi.mock('../core/utils/DummyDelay', () => ({
+  delay: vi.fn().mockResolvedValue(undefined), // всегда резолвится мгновенно
+}));
+
 describe('App', () => {
   beforeEach(() => {
-    vi.spyOn(App.prototype as typeof App.prototype, 'delay')
-      .mockResolvedValue(undefined);
+    vi.clearAllMocks();
     localStorage.clear();
   });
 

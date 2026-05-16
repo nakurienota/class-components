@@ -1,91 +1,72 @@
 import './App.scss';
-import { Component } from 'react';
-import type { ApplicationContext, ItemDisplay } from './types';
+import { useCallback, useEffect, useState } from 'react';
+import type { ItemDisplay } from './types';
 import { RestHandler } from './service/RestHandler.tsx';
 import { PokemonConverter } from './core/converter/PokemonConverter.tsx';
 import Search from './components/search/Search.tsx';
 import ErrorBoundary from './core/error/ErrorBoundary.tsx';
 import ResultSection from './components/result/ResultSection.tsx';
+import { delay } from './core/utils/DummyDelay.tsx';
 
-class App extends Component<object, ApplicationContext> {
-  private readonly restHandler: RestHandler;
-  private readonly POKEMON_API: string = 'https://pokeapi.co/api/v2/pokemon/';
-  private readonly POKEMON_API_LIMIT: string =
-    'https://pokeapi.co/api/v2/pokemon?limit=20&offset=0';
+const restHandler = new RestHandler();
+const POKEMON_API = 'https://pokeapi.co/api/v2/pokemon/';
+const POKEMON_API_LIMIT = 'https://pokeapi.co/api/v2/pokemon?limit=20&offset=0';
 
-  constructor(props: object) {
-    super(props);
-    this.restHandler = new RestHandler();
-    this.state = {
-      items: [],
-      isLoading: false,
-      error: null,
-      search: localStorage.getItem('inMemory') ?? '',
-      testErrorThrow: false,
+function App() {
+  const [items, setItems] = useState<ItemDisplay[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [name, setName] = useState<string>(() => localStorage.getItem('inMemory') ?? '');
+  const [testErrorThrow, setTestErrorThrow] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        await delay(Math.random() * 1000 + 500);
+        const url = name ? POKEMON_API + name.toLowerCase() : POKEMON_API_LIMIT;
+        const data = await restHandler.get(url, PokemonConverter);
+        setItems(data);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'Something goes wrong');
+        setItems([]);
+      } finally {
+        setIsLoading(false);
+      }
     };
-  }
+    fetchData();
+  }, [name]);
 
-  componentDidMount() {
-    this.loadData(this.state.search);
-  }
+  const handleSearch = useCallback((input: string) => {
+    if (name === input && !error) return;
+    setName(input);
+    setTestErrorThrow(false);
+  }, [name, error]);
 
-  delay(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
+  const throwError = () => setTestErrorThrow(true);
 
-  loadData = async (term: string) => {
-    this.setState({ isLoading: true, error: null, testErrorThrow: false });
-    try {
-      await this.delay(Math.random() * 1000 + 500);
+  return (
+    <div className="items-wrapper">
+      <section className="items-search">
+        <Search onSearch={handleSearch}></Search>
+      </section>
+      <section className="items-result">
+        <ErrorBoundary key={name}>
+          <ResultSection
+            items={items}
+            isLoading={isLoading}
+            error={error}
+            shouldThrow={testErrorThrow}
+          />
+        </ErrorBoundary>
+      </section>
+      <button className="error-btn" onClick={throwError}>
+        Test error
+      </button>
+    </div>
+  );
 
-      const url: string = term
-        ? this.POKEMON_API + term.toLowerCase()
-        : this.POKEMON_API_LIMIT;
-      const items: ItemDisplay[] = await this.restHandler.get(
-        url,
-        PokemonConverter
-      );
-      this.setState({ items, isLoading: false });
-    } catch (e) {
-      const error: string = e instanceof Error ? e.message : 'Unknown error';
-      this.setState({ error, isLoading: false, items: [] });
-    }
-  };
-
-  handleSearch = (term: string) => {
-    if (term === this.state.search && !this.state.error) return;
-    this.setState({ search: term, testErrorThrow: false });
-    this.loadData(term);
-  };
-
-  throwError = () => {
-    this.setState({ testErrorThrow: true });
-  };
-
-  render() {
-    const { items, isLoading, error, testErrorThrow, search } = this.state;
-
-    return (
-      <div className="items-wrapper">
-        <section className="items-search">
-          <Search onSearch={this.handleSearch}></Search>
-        </section>
-        <section className="items-result">
-          <ErrorBoundary key={search}>
-            <ResultSection
-              items={items}
-              isLoading={isLoading}
-              error={error}
-              shouldThrow={testErrorThrow}
-            />
-          </ErrorBoundary>
-        </section>
-        <button className="error-btn" onClick={this.throwError}>
-          Test error
-        </button>
-      </div>
-    );
-  }
 }
 
 export default App;
