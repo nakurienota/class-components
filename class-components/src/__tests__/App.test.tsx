@@ -1,14 +1,14 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import App from '../App';
 import userEvent from '@testing-library/user-event';
+import MainPage from '../layout/main/MainPage.tsx';
 
 vi.mock('../core/utils/DummyDelay', () => ({
   delay: vi.fn().mockResolvedValue(undefined), // всегда резолвится мгновенно
 }));
 
-describe('App', () => {
+describe('MainPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
@@ -19,7 +19,7 @@ describe('App', () => {
       ok: true,
       json: async () => ({ results: [{ name: 'test', url: 'testUrl' }] }),
     } as Response);
-    render(<App />);
+    render(<MainPage />);
     expect(
       screen.getByText('Imitating loading...'),
     ).toBeInTheDocument();
@@ -35,7 +35,7 @@ describe('App', () => {
 
     vi.spyOn(globalThis, 'fetch').mockResolvedValue({ ok: false, status: 500 } as Response);
 
-    render(<App />);
+    render(<MainPage />);
 
     await waitFor(() => {
       expect(screen.getByText('Something goes wrong')).toBeInTheDocument();
@@ -47,7 +47,7 @@ describe('App', () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({ ok: true, json: async () => ({ results: [] }) } as Response)
       .mockResolvedValueOnce({ ok: true, json: async () => ({ name: 'test', base_experience: 1 }) } as Response);
 
-    render(<App />);
+    render(<MainPage />);
     const input = screen.getByRole('textbox');
     const button = screen.getByRole('button', { name: /search/i });
 
@@ -65,7 +65,7 @@ describe('App', () => {
 
     vi.spyOn(globalThis, 'fetch').mockResolvedValue({ ok: true, json: async () => ({ results: [] }) } as Response);
 
-    render(<App />);
+    render(<MainPage />);
 
     await userEvent.click(screen.getByRole('button', { name: /test error/i }));
     await waitFor(() => {

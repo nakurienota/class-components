@@ -38,7 +38,7 @@ describe('Search', () => {
     expect(result.current[0]).toBe(42);
   });
 
-  it('handles invalid JSON in localStorage gracefully', () => {
+  it('handles invalid JSON in localStorage', () => {
     localStorage.setItem('key', 'invalid json{{{');
     const { result } = renderHook(() => LocalStorageHook('key', 'fallback'));
     expect(result.current[0]).toBe('fallback');
