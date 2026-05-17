@@ -9,7 +9,7 @@ describe('ItemList', () => {
       { name: 'Test1', description: 'TestDesc1' },
       { name: 'Test2', description: 'TestDesc2' }];
 
-    render(<ItemList items={items} />);
+    render(<ItemList items={items} onItemClick={() => {}} />);
 
     expect(screen.getByText('Test1')).toBeInTheDocument();
     expect(screen.getByText('TestDesc1')).toBeInTheDocument();
