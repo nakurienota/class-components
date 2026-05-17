@@ -7,12 +7,14 @@ describe('PokemonConverter', () => {
     const input = {
       results: [{ name: 'pikachu', url: 'pikaurl' },
         { name: 'pidgeot', url: 'pidgeoturl' }],
+      count: 2
     };
 
     const actual = PokemonConverter.fromJson(input);
 
-    expect(actual).toEqual([{ name: 'pikachu', description: 'pikaurl' },
+    expect(actual.items).toEqual([{ name: 'pikachu', description: 'pikaurl' },
       { name: 'pidgeot', description: 'pidgeoturl' }]);
+    expect(actual.total).toEqual(2);
   });
 
   it('single pokemon should be converted', () => {
@@ -20,6 +22,7 @@ describe('PokemonConverter', () => {
 
     const actual = PokemonConverter.fromJson(input);
 
-    expect(actual).toEqual([{ name: 'pikachu', description: 'Base experience: 1' }]);
+    expect(actual.items).toEqual([{ name: 'pikachu', description: 'Base exp: 1' }]);
+    expect(actual.total).toEqual(1);
   });
 });

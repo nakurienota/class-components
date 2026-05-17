@@ -3,10 +3,19 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import userEvent from '@testing-library/user-event';
 import MainPage from '../layout/main/MainPage.tsx';
+import { MemoryRouter } from 'react-router-dom';
 
 vi.mock('../core/utils/DummyDelay', () => ({
   delay: vi.fn().mockResolvedValue(undefined), // всегда резолвится мгновенно
 }));
+
+const renderWithRouter = (component: React.ReactNode) => {
+  return render(
+    <MemoryRouter>
+      {component}
+    </MemoryRouter>,
+  );
+};
 
 describe('MainPage', () => {
   beforeEach(() => {
@@ -19,7 +28,7 @@ describe('MainPage', () => {
       ok: true,
       json: async () => ({ results: [{ name: 'test', url: 'testUrl' }] }),
     } as Response);
-    render(<MainPage />);
+    renderWithRouter(<MainPage />);
     expect(
       screen.getByText('Imitating loading...'),
     ).toBeInTheDocument();
@@ -35,7 +44,7 @@ describe('MainPage', () => {
 
     vi.spyOn(globalThis, 'fetch').mockResolvedValue({ ok: false, status: 500 } as Response);
 
-    render(<MainPage />);
+    renderWithRouter(<MainPage />);
 
     await waitFor(() => {
       expect(screen.getByText('Something goes wrong')).toBeInTheDocument();
@@ -47,7 +56,7 @@ describe('MainPage', () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({ ok: true, json: async () => ({ results: [] }) } as Response)
       .mockResolvedValueOnce({ ok: true, json: async () => ({ name: 'test', base_experience: 1 }) } as Response);
 
-    render(<MainPage />);
+    renderWithRouter(<MainPage />);
     const input = screen.getByRole('textbox');
     const button = screen.getByRole('button', { name: /search/i });
 
@@ -65,7 +74,7 @@ describe('MainPage', () => {
 
     vi.spyOn(globalThis, 'fetch').mockResolvedValue({ ok: true, json: async () => ({ results: [] }) } as Response);
 
-    render(<MainPage />);
+    renderWithRouter(<MainPage />);
 
     await userEvent.click(screen.getByRole('button', { name: /test error/i }));
     await waitFor(() => {

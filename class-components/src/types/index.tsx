@@ -49,3 +49,10 @@ export interface ResultSectionProperties {
   error: string | null;
   shouldThrow: boolean;
 }
+
+export interface PaginationProperties{
+  current: number;
+  total: number;
+  size: number;
+  onPageChange: (page: number) => void;
+}
