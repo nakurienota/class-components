@@ -48,6 +48,7 @@ export interface ResultSectionProperties {
   isLoading: boolean;
   error: string | null;
   shouldThrow: boolean;
+  onItemClick: (name: string) => void;
 }
 
 export interface PaginationProperties{
@@ -55,4 +56,16 @@ export interface PaginationProperties{
   total: number;
   size: number;
   onPageChange: (page: number) => void;
+}
+
+export interface PokemonDetails {
+  name: string;
+  base_experience: number;
+  height: number;
+  weight: number;
+}
+
+export interface ItemDisplayProperties {
+  item: ItemDisplay;
+  onClick?: (name: string) => void;
 }

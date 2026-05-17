@@ -8,7 +8,8 @@ import Search from '../../components/search/Search.tsx';
 import ErrorBoundary from '../../core/error/ErrorBoundary.tsx';
 import ResultSection from '../../components/result/ResultSection.tsx';
 import Pagination from '../../__tests__/components/pagination/Pagination.tsx';
-import { useSearchParams } from 'react-router-dom';
+import { Outlet, useMatch, useNavigate, useSearchParams } from 'react-router-dom';
+import './MainPage.scss';
 
 const restHandler = new RestHandler();
 const POKEMON_API = 'https://pokeapi.co/api/v2/pokemon/';
@@ -22,9 +23,10 @@ function MainPage() {
   const [testErrorThrow, setTestErrorThrow] = useState<boolean>(false);
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentPage:number = Number(searchParams.get('page') ?? 1);
-  const details: string |null = searchParams.get('details');
+  const currentPage: number = Number(searchParams.get('page') ?? 1);
+  const isDetails = useMatch('/details/:name');
   const [total, setTotal] = useState<number>(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,13 +53,21 @@ function MainPage() {
     if (name === input && !error) return;
     setName(input);
     setTestErrorThrow(false);
-    setSearchParams({page: '1'});
+    setSearchParams({ page: '1' });
   }, [name, error, setName, setSearchParams]);
 
   const throwError = () => setTestErrorThrow(true);
 
   const handlePageChange = (newPage: number) => {
-    setSearchParams(details ? { page: String(newPage), details } : { page: String(newPage) });
+    setSearchParams(isDetails ? { page: String(newPage) } : { page: String(newPage) });
+  };
+
+  const handleCloseDetails = () => {
+    navigate(`/?page=${currentPage}`);
+  };
+
+  const handleItemClick = (itemName: string) => {
+    navigate(`/details/${itemName}?page=${currentPage}`);
   };
 
   return (
@@ -65,13 +75,20 @@ function MainPage() {
       <section className="items-search">
         <Search onSearch={handleSearch}></Search>
       </section>
-      <section className="items-result">
-        <ErrorBoundary key={name}>
-          <ResultSection items={items} isLoading={isLoading} error={error} shouldThrow={testErrorThrow} />
-        </ErrorBoundary>
-        {!isLoading && !error && total > PAGE_SIZE && (
-          <Pagination current={currentPage} total={total} size={PAGE_SIZE} onPageChange={handlePageChange} />)}
-      </section>
+      <div className={`items-content ${isDetails ? 'split' : ''}`}>
+        <section className="items-content__result">
+          <ErrorBoundary key={name}>
+            <ResultSection items={items} isLoading={isLoading} error={error} shouldThrow={testErrorThrow}
+                           onItemClick={handleItemClick} />
+            {!isLoading && !error && total > PAGE_SIZE && (
+              <Pagination current={currentPage} total={total} size={PAGE_SIZE} onPageChange={handlePageChange} />)}
+          </ErrorBoundary>
+        </section>
+        {isDetails && (<section className="items-content__details">
+          <button className="close-btn" onClick={handleCloseDetails}>Close</button>
+          <Outlet />
+        </section>)}
+      </div>
       <button className="error-btn" onClick={throwError}>
         Test error
       </button>

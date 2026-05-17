@@ -1,9 +1,10 @@
 import './App.scss';
-import { Routes, Route, NavLink } from 'react-router-dom';
+import { NavLink, Route, Routes } from 'react-router-dom';
 import MainPage from './layout/main/MainPage.tsx';
 import AboutPage from './layout/about/AboutPage.tsx';
 import NotFoundPage from './layout/notfound/NotFoundPage.tsx';
 import ErrorBoundary from './core/error/ErrorBoundary.tsx';
+import DetailsPage from './layout/details/Details.tsx';
 
 function App() {
   return (
@@ -15,7 +16,9 @@ function App() {
 
       <ErrorBoundary>
         <Routes>
-          <Route path="/" element={<MainPage />} />
+          <Route path="/" element={<MainPage />}>
+            <Route path="details/:name" element={<DetailsPage />} /> {/* ← дочерний роут */}
+          </Route>
           <Route path="/about" element={<AboutPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

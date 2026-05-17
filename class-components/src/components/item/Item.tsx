@@ -1,13 +1,13 @@
-import type { ItemDisplay } from '../../types';
+import type { ItemDisplayProperties } from '../../types';
 import './Item.scss';
 
-function Item({ item }: Readonly<{ item: ItemDisplay }>) {
+function Item({ item, onClick }: Readonly<ItemDisplayProperties>) {
   const { name, description } = item;
   return (
-    <div className="item">
+    <button className="item" onClick={() => onClick?.(name)}>
       <p>{name}</p>
       <p>{description}</p>
-    </div>
+    </button>
   );
 }
 
