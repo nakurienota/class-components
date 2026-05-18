@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import './NotFoundPage.scss';
 
 function NotFoundPage() {
   return (

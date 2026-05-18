@@ -1,0 +1,9 @@
+@use '../../styles/variables' as v;
+
+.notfound{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: v.$primary-white;
+}
