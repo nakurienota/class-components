@@ -1,0 +1,29 @@
+@use '../../styles/variables' as v;
+
+.items-content {
+  display: flex;
+  flex-direction: row;
+  font-family: v.$font-primary;
+  color: v.$primary-white;
+  text-align: center;
+
+  &__result {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__details {
+    flex-shrink: 0;
+    padding: 20px 40px;
+
+    h2 {
+      color: v.$primary-blue;
+    }
+
+    button {
+      background: v.$primary-blue;
+      border-radius: v.$border-radius-base;
+      padding: 5px 10px;
+    }
+  }
+}

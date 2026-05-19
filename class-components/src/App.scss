@@ -9,7 +9,7 @@ body {
   font-family: v.$font-primary;
 }
 
-.items-wrapper {
+.app {
   min-height: 100vh;
   background-color: v.$primary-black;
   display: flex;
@@ -58,5 +58,50 @@ input {
 
   &:hover {
     opacity: 0.85;
+  }
+}
+
+.about {
+  max-width: 1200px;
+  min-height: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h1 {
+    color: v.$primary-white;
+  }
+
+  p {
+    color: v.$primary-light-gray;
+  }
+}
+
+a {
+  max-width: 200px;
+  margin: 0.5rem;
+  padding: .25rem 1rem;
+  background: v.$primary-blue;
+  color: v.$primary-white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: .95rem;
+  transition: opacity .2s;
+
+  &:hover {
+    opacity: .85;
+  }
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+
+  &__nav{
+    display: flex;
+    flex-direction: row;
+    margin: 20px;
   }
 }

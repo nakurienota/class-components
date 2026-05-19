@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
+  base: '/nakurienota-REACT2026Q2/',
 
   test: {
     globals: true,
