@@ -1,4 +1,4 @@
-import type { PaginationProperties } from '../../../types';
+import type { PaginationProperties } from '../../types';
 import './Pagination.scss';
 
 function Pagination({ current, total, size, onPageChange }: Readonly<PaginationProperties>) {

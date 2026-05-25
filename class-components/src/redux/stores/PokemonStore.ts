@@ -56,6 +56,9 @@ const pokemonStore = createSlice({
       else
         state.selectedItems.push(action.payload);
     },
+    clearSelectedItems: (state) => {
+      state.selectedItems = [];
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -76,5 +79,5 @@ const pokemonStore = createSlice({
   },
 });
 
-export const { setSearchTerm, setCurrentPage, setTestErrorThrow, addSelectedItem } = pokemonStore.actions;
+export const { setSearchTerm, setCurrentPage, setTestErrorThrow, addSelectedItem, clearSelectedItems } = pokemonStore.actions;
 export default pokemonStore.reducer;

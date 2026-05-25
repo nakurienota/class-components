@@ -2,11 +2,12 @@ import { useEffect} from 'react';
 import Search from '../../components/search/Search.tsx';
 import ErrorBoundary from '../../core/error/ErrorBoundary.tsx';
 import ResultSection from '../../components/result/ResultSection.tsx';
-import Pagination from '../../__tests__/components/pagination/Pagination.tsx';
+import Pagination from '../../components/pagination/Pagination.tsx';
 import { Outlet, useMatch, useNavigate, useSearchParams } from 'react-router-dom';
 import './MainPage.scss';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks/hooks.ts';
 import { getPokemons, setCurrentPage, setSearchTerm, setTestErrorThrow } from '../../redux/stores/PokemonStore.ts';
+import Flyout from '../../components/flyout/Flyout.tsx';
 
 const PAGE_SIZE = 10;
 
@@ -66,6 +67,7 @@ function MainPage() {
       <button className="error-btn" onClick={throwError}>
         Test error
       </button>
+      <Flyout />
     </div>
   );
 
