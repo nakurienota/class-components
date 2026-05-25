@@ -8,4 +8,5 @@ export interface PokemonState {
   searchTerm: string;
   currentPage: number;
   testErrorThrow: boolean;
+  selectedItems: ItemDisplay[]
 }

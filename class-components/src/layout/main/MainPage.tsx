@@ -11,7 +11,7 @@ import { getPokemons, setCurrentPage, setSearchTerm, setTestErrorThrow } from '.
 const PAGE_SIZE = 10;
 
 function MainPage() {
-  const storeDispatcher = useAppDispatch();
+  const appDispatcher = useAppDispatch();
   const { items, isLoading, error, searchTerm, total, testErrorThrow} = useAppSelector(state => state.pokemons);
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -20,19 +20,19 @@ function MainPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    storeDispatcher(getPokemons({ name: searchTerm, page: pageFromUrl }));
-  }, [searchTerm, pageFromUrl, storeDispatcher]);
+    appDispatcher(getPokemons({ name: searchTerm, page: pageFromUrl }));
+  }, [searchTerm, pageFromUrl, appDispatcher]);
 
   const handleSearch = (input: string) => {
     if (input === searchTerm) return;
-    storeDispatcher(setSearchTerm(input));
+    appDispatcher(setSearchTerm(input));
     setSearchParams({ page: '1' });
   };
 
-  const throwError = () => storeDispatcher(setTestErrorThrow(true));
+  const throwError = () => appDispatcher(setTestErrorThrow(true));
 
   const handlePageChange = (newPage: number) => {
-    storeDispatcher(setCurrentPage(newPage));
+    appDispatcher(setCurrentPage(newPage));
     setSearchParams({ page: String(newPage) });
   };
 

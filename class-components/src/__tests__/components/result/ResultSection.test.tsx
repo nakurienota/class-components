@@ -3,6 +3,16 @@ import { describe, expect, it } from 'vitest';
 
 import ResultSection from '../../../components/result/ResultSection';
 
+vi.mock('react-redux', () => ({
+  useDispatch: vi.fn(),
+  useSelector: vi.fn(),
+}));
+
+vi.mock('../../redux/hooks/hooks', () => ({
+  useAppDispatch: () => vi.fn(),
+  useAppSelector: () => [],
+}));
+
 describe('ResultSection', () => {
   it('shows spinner when loading', () => {
     render(<ResultSection items={[]} isLoading={true} error={null} shouldThrow={false} onItemClick={() => {}}/>);

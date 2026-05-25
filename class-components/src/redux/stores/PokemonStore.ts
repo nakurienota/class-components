@@ -3,6 +3,7 @@ import type { PokemonState } from '../interface/PokemonState.ts';
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { delay } from '../../core/utils/DummyDelay.tsx';
 import { PokemonConverter } from '../../core/converter/PokemonConverter.tsx';
+import type { ItemDisplay } from '../../types';
 
 const restHandler = new RestHandler();
 const POKEMON_API = 'https://pokeapi.co/api/v2/pokemon/';
@@ -15,7 +16,8 @@ const initialState: PokemonState = {
   error: null,
   searchTerm: localStorage.getItem('inMemory') ?? '',
   currentPage: 1,
-  testErrorThrow: false
+  testErrorThrow: false,
+  selectedItems: []
 };
 
 export const getPokemons = createAsyncThunk(
@@ -45,6 +47,15 @@ const pokemonStore = createSlice({
     setTestErrorThrow(state, action: PayloadAction<boolean>) {
       state.testErrorThrow = action.payload;
     },
+    addSelectedItem(state, action: PayloadAction<ItemDisplay>) {
+      const alreadySelected = state.selectedItems.find(
+        item => item.name === action.payload.name,
+      );
+      if (alreadySelected)
+        state.selectedItems = state.selectedItems.filter(item => item.name !== action.payload.name);
+      else
+        state.selectedItems.push(action.payload);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -65,5 +76,5 @@ const pokemonStore = createSlice({
   },
 });
 
-export const { setSearchTerm, setCurrentPage, setTestErrorThrow } = pokemonStore.actions;
+export const { setSearchTerm, setCurrentPage, setTestErrorThrow, addSelectedItem } = pokemonStore.actions;
 export default pokemonStore.reducer;
