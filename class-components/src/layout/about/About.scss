@@ -1,0 +1,36 @@
+@use '../../styles/variables' as v;
+
+.about {
+  max-width: 1200px;
+  min-height: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h1 {
+    color: var(--font-color-primary);
+  }
+
+  p {
+    color: var(--font-color-alt);
+  }
+}
+
+a {
+  max-width: 300px;
+  margin: 0.5rem;
+  padding: .25rem 1rem;
+  background: var(--buttons-primary);
+  color: var(--font-color-primary);
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: .95rem;
+  transition: opacity .2s;
+  text-align: center;
+
+  &:hover {
+    opacity: .85;
+  }
+}

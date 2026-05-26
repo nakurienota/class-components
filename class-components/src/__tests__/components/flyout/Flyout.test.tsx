@@ -4,6 +4,7 @@ import Flyout from '../../../components/flyout/Flyout';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks/hooks';
 import { clearSelectedItems } from '../../../redux/stores/PokemonStore';
 import userEvent from '@testing-library/user-event';
+import type { RootState } from '../../../redux/store';
 
 vi.mock('../../../redux/hooks/hooks', () => ({
   useAppDispatch: vi.fn(),
@@ -14,14 +15,24 @@ const appDispatcher = vi.fn();
 
 beforeEach(() => {
   vi.clearAllMocks();
-  (useAppDispatch as any).mockReturnValue(appDispatcher);
+  (useAppDispatch as unknown as ReturnType<typeof vi.fn>).mockReturnValue(appDispatcher);
 });
+
+const mockSelector = (selectedItems: { name: string }[]) => {
+  (useAppSelector as unknown as ReturnType<typeof vi.fn>)
+    .mockImplementation(
+      (selector: (state: RootState) => unknown) =>
+        selector({
+          pokemons: {
+            selectedItems,
+          },
+        } as RootState),
+    );
+};
 
 describe('Flyout', () => {
   it('Flyout should be hidden when no selected items present', () => {
-    (useAppSelector as any).mockImplementation((fn: any) =>
-      fn({ pokemons: { selectedItems: [] } }),
-    );
+    mockSelector([]);
 
     const { container } = render(<Flyout />);
 
@@ -29,8 +40,7 @@ describe('Flyout', () => {
   });
 
   it('Flyout should render when selected items present', () => {
-    (useAppSelector as any).mockImplementation((fn: any) =>
-      fn({ pokemons: { selectedItems: [{ name: 'Test' }, { name: 'Test2' }] } }));
+    mockSelector([{ name: 'Test' }, { name: 'Test2' }]);
 
     render(<Flyout />);
 
@@ -39,8 +49,7 @@ describe('Flyout', () => {
   });
 
   it('Action buttons should render', () => {
-    (useAppSelector as any).mockImplementation((fn: any) =>
-      fn({ pokemons: { selectedItems: [{ name: 'Test' }] } }));
+    mockSelector([{ name: 'Test' }]);
 
     render(<Flyout />);
 
@@ -50,9 +59,7 @@ describe('Flyout', () => {
 
   it('Clear selected items method should be triggered on button click', async () => {
     const dummyUser = userEvent.setup();
-
-    (useAppSelector as any).mockImplementation((fn: any) =>
-      fn({ pokemons: { selectedItems: [{ name: 'Test' }] } }));
+    mockSelector([{ name: 'Test' }]);
 
     render(<Flyout />);
 
@@ -79,8 +86,7 @@ describe('Flyout', () => {
       return element;
     });
 
-    (useAppSelector as any).mockImplementation((fn: any) =>
-      fn({ pokemons: { selectedItems: [{ name: 'Test' }] } }));
+    mockSelector([{ name: 'Test' }]);
 
     render(<Flyout />);
 

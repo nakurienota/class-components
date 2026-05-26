@@ -5,7 +5,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  color: v.$primary-white;
+  color: var(--font-color-primary);
 
   &__button {
     display: flex;

@@ -1,0 +1,31 @@
+@use './styles/variables.scss' as *;
+
+:root {
+  background-color: var(--background-primary);
+  letter-spacing: 0.18px;
+  color-scheme: light dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @media (max-width: 1024px) {
+    font-size: 16px;
+  }
+}
+
+[data-theme='light'] {
+  --background-primary: #{$primary-white};
+  --background-alt: #{$primary-light-gray};
+  --buttons-primary: #{$primary-blue};
+  --font-color-primary: #{$primary-black};
+  --font-color-alt: #{$primary-black};
+}
+
+[data-theme='dark'] {
+  --background-primary: #{$primary-black};
+  --background-alt: #{$alt-black};
+  --buttons-primary: #{$primary-blue};
+  --font-color-primary: #{$primary-white};
+  --font-color-alt: #{$primary-light-gray};
+}

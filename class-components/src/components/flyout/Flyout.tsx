@@ -16,13 +16,13 @@ function Flyout() {
 
   const handleDownload = () => {
     const data = JSON.stringify(selectedItems, null, 2);
-    const blob = new Blob([data], { type: 'application/json' });
+    const blob = new Blob([data], { type: 'csv' });
 
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
 
     a.href = url;
-    a.download = 'selected-items.json';
+    a.download = selectedItems.length + '_items.csv';
     a.click();
 
     URL.revokeObjectURL(url);

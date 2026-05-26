@@ -2,7 +2,6 @@
 
 .item {
   display: flex;
-  background-color: v.$alt-black;
   border: 1px solid v.$primary-gray;
   border-radius: v.$border-radius-base;
   padding: 4px;
@@ -24,6 +23,10 @@
 
   p:last-child {
     font-size: 14px;
-    color: v.$primary-light-gray;
+    color: var(--font-color-primary);
+  }
+
+  input {
+    background-color: #49d0ff;
   }
 }

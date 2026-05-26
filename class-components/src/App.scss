@@ -3,21 +3,51 @@
 body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
   height: 100%;
   width: 100%;
   font-family: v.$font-primary;
+  background-color: var(--background-primary);
+  max-width: 100%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 .app {
   min-height: 100vh;
-  background-color: v.$primary-black;
+
+  background-color: var(--background-primary);
   display: flex;
   flex-direction: column;
+
+  &__nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px;
+  }
+
+  &__theme-switcher {
+    padding: 8px 8px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background: var(--buttons-primary);
+    color: var(--font-color-primary);
+    transition: 0.2s ease;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
 }
 
 .items-search {
-  border: 1px solid v.$primary-blue;
+  border: 1px solid var(--buttons-primary);
   padding: 10px 20px;
   position: sticky;
   top: 0;
@@ -25,7 +55,7 @@ body {
 }
 
 .items-result {
-  border: 1px solid v.$primary-blue;
+  border: 1px solid var(--buttons-primary);
   padding: 10px;
   flex: 1;
   overflow-y: auto;
@@ -35,9 +65,9 @@ input {
   width: 100%;
   padding: 0.75rem 1rem;
   font-size: 1rem;
-  border: 1px solid v.$primary-blue;
+  border: 1px solid var(--buttons-primary);
   border-radius: 8px;
-  background: v.$alt-black;
+  background: var(--background-alt);
   margin-bottom: 2rem;
   box-sizing: border-box;
 }
@@ -61,47 +91,3 @@ input {
   }
 }
 
-.about {
-  max-width: 1200px;
-  min-height: 100%;
-  margin: 0 auto;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  h1 {
-    color: v.$primary-white;
-  }
-
-  p {
-    color: v.$primary-light-gray;
-  }
-}
-
-a {
-  max-width: 200px;
-  margin: 0.5rem;
-  padding: .25rem 1rem;
-  background: v.$primary-blue;
-  color: v.$primary-white;
-  text-decoration: none;
-  border-radius: 6px;
-  font-size: .95rem;
-  transition: opacity .2s;
-
-  &:hover {
-    opacity: .85;
-  }
-}
-
-.app {
-  display: flex;
-  flex-direction: column;
-
-  &__nav{
-    display: flex;
-    flex-direction: row;
-    margin: 20px;
-  }
-}

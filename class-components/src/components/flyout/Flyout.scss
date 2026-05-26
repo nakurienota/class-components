@@ -11,8 +11,8 @@
 
   padding: 12px 16px;
 
-  background: v.$primary-black;
-  color: v.$primary-white;
+  background: var(--background-primary);
+  color: var(--font-color-primary);
   border-top: 2px solid v.$primary-blue;
   z-index: 1000;
 }

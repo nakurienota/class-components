@@ -5,13 +5,19 @@ import AboutPage from './layout/about/AboutPage.tsx';
 import NotFoundPage from './layout/notfound/NotFoundPage.tsx';
 import ErrorBoundary from './core/error/ErrorBoundary.tsx';
 import DetailsPage from './layout/details/Details.tsx';
+import { useTheme } from './context/UseTheme.tsx';
 
 function App() {
+  const { theme, toggleTheme } = useTheme();
   return (
     <div className="app">
       <nav className="app__nav">
-        <NavLink to="/">Home</NavLink>
-        <NavLink to="/about">About</NavLink>
+        <div className="app__nav-links">
+          <NavLink to="/">Home</NavLink>
+          <NavLink to="/about">About</NavLink>
+        </div>
+        <button className="app__theme-switcher"
+                onClick={toggleTheme}>{theme === 'light' ? '🌙' : '☀️'}</button>
       </nav>
 
       <ErrorBoundary>

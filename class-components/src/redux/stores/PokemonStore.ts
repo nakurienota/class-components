@@ -28,7 +28,8 @@ export const getPokemons = createAsyncThunk(
     const url = name
       ? POKEMON_API + name.toLowerCase()
       : `https://pokeapi.co/api/v2/pokemon?limit=${PAGE_SIZE}&offset=${offset}`;
-    return await restHandler.get(url, PokemonConverter);
+    const cleanUrl = url.trim().replace(/"/g, '');
+    return await restHandler.get(cleanUrl, PokemonConverter);
   },
 );
 

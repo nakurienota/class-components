@@ -10,6 +10,13 @@ vi.mock('../core/utils/DummyDelay', () => ({
   delay: vi.fn().mockResolvedValue(undefined),
 }));
 
+vi.mock('../context/UseTheme.tsx', () => ({
+  useTheme: () => ({
+    theme: 'dark',
+    toggleTheme: vi.fn(),
+  }),
+}));
+
 const createTestStore = () => configureStore({ reducer: { pokemons: pokemonStore } });
 
 const renderApp = (initialPath = '/') =>
