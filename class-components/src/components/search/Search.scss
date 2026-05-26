@@ -7,7 +7,7 @@
   input {
     flex: 1;
     padding: 10px 16px;
-    background-color: v.$primary-black;
+    background-color: var(--background-alt);
     border: 1px solid v.$primary-gray;
     border-radius: v.$border-radius-base;
     color: v.$primary-white;
@@ -23,7 +23,7 @@
 
   button {
     background-color: v.$primary-blue;
-    color: v.$primary-black;
+    color: var(--font-color-primary);
     height: 40px;
     border: none;
     border-radius: v.$border-radius-base;

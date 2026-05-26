@@ -1,10 +1,10 @@
 @use '../../styles/variables' as v;
 
 .item {
-  background-color: v.$alt-black;
+  display: flex;
   border: 1px solid v.$primary-gray;
   border-radius: v.$border-radius-base;
-  padding: 16px;
+  padding: 4px;
   color: v.$primary-white;
   font-family: v.$font-primary;
   transition: border-color 0.2s ease;
@@ -23,6 +23,10 @@
 
   p:last-child {
     font-size: 14px;
-    color: v.$primary-light-gray;
+    color: var(--font-color-primary);
+  }
+
+  input {
+    background-color: #49d0ff;
   }
 }

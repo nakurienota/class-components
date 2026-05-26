@@ -1,0 +1,39 @@
+@use '../../styles/variables' as v;
+
+.flyout {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 12px 16px;
+
+  background: var(--background-primary);
+  color: var(--font-color-primary);
+  border-top: 2px solid v.$primary-blue;
+  z-index: 1000;
+}
+
+.flyout__actions {
+  display: flex;
+  gap: 10px;
+
+  button {
+    max-width: 200px;
+    margin: 0.5rem;
+    padding: .25rem 1rem;
+    background: v.$primary-blue;
+    color: v.$primary-white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: .95rem;
+    transition: opacity .2s;
+
+    &:hover {
+      opacity: .85;
+    }
+  }
+}
