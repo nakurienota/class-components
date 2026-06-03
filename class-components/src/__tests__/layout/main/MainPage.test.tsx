@@ -107,23 +107,4 @@ describe('MainPage', () => {
 
     expect(await screen.findByText('test')).toBeInTheDocument();
   });
-
-  it('error screen should render when the test error button is clicked', async () => {
-    vi.spyOn(console, 'error').mockImplementation(() => {
-    });
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
-      ok: true,
-      json: async () => ({ results: [], count: 0 }),
-    } as Response);
-
-    renderWithRouter();
-
-    await userEvent.click(
-      screen.getByRole('button', { name: /test error/i }),
-    );
-
-    await waitFor(() => {
-      expect(screen.getByText('Something goes wrong')).toBeInTheDocument();
-    });
-  });
 });

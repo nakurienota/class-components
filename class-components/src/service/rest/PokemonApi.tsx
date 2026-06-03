@@ -9,6 +9,7 @@ const PAGE_SIZE = 10;
 export const pokemonApi = createApi({
   reducerPath: 'pokemonApi',
   baseQuery: fetchBaseQuery({ baseUrl: POKEMON_API }),
+  tagTypes: ['PokemonList', 'Pokemon'],
   endpoints: (builder) => ({
     getPokemonsPaged: builder.query<PokemonView, { page: number }>({
       query: ({ page }) => {
@@ -16,12 +17,22 @@ export const pokemonApi = createApi({
         return `?limit=${PAGE_SIZE}&offset=${offset}`;
       },
       transformResponse: (raw: PokemonListResponse) => PokemonConverter.fromJson(raw),
+      providesTags: (result, _error, arg) =>
+        result ? [...result.items.map((item) => ({ type: 'Pokemon' as const, id: item.name })),
+          { type: 'PokemonList', id: arg.page }] : [{ type: 'PokemonList', id: arg.page }],
     }),
     getPokemonByName: builder.query<PokemonView, string>({
       query: (name) => `/${name.toLowerCase().trim()}`,
       transformResponse: (raw: PokemonSingleResponse) => PokemonConverter.fromJson(raw),
+      providesTags: (_result, _error, name) => [
+        { type: 'Pokemon', id: name },
+      ],
+    }),
+    refreshPokemons: builder.mutation<void, void>({
+      queryFn: async () => ({ data: undefined }),
+      invalidatesTags: ['PokemonList', 'Pokemon'],
     }),
   }),
 });
 
-export const { useGetPokemonsPagedQuery, useGetPokemonByNameQuery } = pokemonApi;
+export const { useGetPokemonsPagedQuery, useGetPokemonByNameQuery, useRefreshPokemonsMutation } = pokemonApi;

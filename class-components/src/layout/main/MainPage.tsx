@@ -5,9 +5,13 @@ import Pagination from '../../components/pagination/Pagination.tsx';
 import { Outlet, useMatch, useNavigate, useSearchParams } from 'react-router-dom';
 import './MainPage.scss';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks/hooks.ts';
-import { setCurrentPage, setSearchTerm, setTestErrorThrow } from '../../redux/stores/PokemonStore.ts';
+import { setCurrentPage, setSearchTerm } from '../../redux/stores/PokemonStore.ts';
 import Flyout from '../../components/flyout/Flyout.tsx';
-import { useGetPokemonByNameQuery, useGetPokemonsPagedQuery } from '../../service/rest/PokemonApi';
+import {
+  useGetPokemonByNameQuery,
+  useGetPokemonsPagedQuery,
+  useRefreshPokemonsMutation,
+} from '../../service/rest/PokemonApi';
 import { type FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
 const PAGE_SIZE = 10;
@@ -33,8 +37,6 @@ function MainPage() {
     appDispatcher(setSearchTerm(input));
     setSearchParams({ page: '1' });
   };
-
-  const throwError = () => appDispatcher(setTestErrorThrow(true));
 
   const handlePageChange = (newPage: number) => {
     appDispatcher(setCurrentPage(newPage));
@@ -67,6 +69,8 @@ function MainPage() {
     return (typeof error === 'object' && error !== null && 'status' in error);
   }
 
+  const [refresh] = useRefreshPokemonsMutation();
+
   return (
     <div className="items-wrapper">
       <section className="items-search">
@@ -86,9 +90,9 @@ function MainPage() {
           <Outlet />
         </section>)}
       </div>
-      <button className="error-btn" onClick={throwError}>
-        Test error
-      </button>
+        <button className="error-btn" onClick={() => refresh()}>
+          Invalidate cache
+        </button>
       <Flyout />
     </div>
   );
