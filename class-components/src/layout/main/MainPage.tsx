@@ -1,4 +1,3 @@
-import { useEffect} from 'react';
 import Search from '../../components/search/Search.tsx';
 import ErrorBoundary from '../../core/error/ErrorBoundary.tsx';
 import ResultSection from '../../components/result/ResultSection.tsx';
@@ -6,23 +5,31 @@ import Pagination from '../../components/pagination/Pagination.tsx';
 import { Outlet, useMatch, useNavigate, useSearchParams } from 'react-router-dom';
 import './MainPage.scss';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks/hooks.ts';
-import { getPokemons, setCurrentPage, setSearchTerm, setTestErrorThrow } from '../../redux/stores/PokemonStore.ts';
+import { setCurrentPage, setSearchTerm, setTestErrorThrow } from '../../redux/stores/PokemonStore.ts';
 import Flyout from '../../components/flyout/Flyout.tsx';
+import {
+  useGetPokemonByNameQuery,
+  useGetPokemonsPagedQuery,
+} from '../../service/rest/PokemonApi';
 
 const PAGE_SIZE = 10;
 
 function MainPage() {
   const appDispatcher = useAppDispatch();
-  const { items, isLoading, error, searchTerm, total, testErrorThrow} = useAppSelector(state => state.pokemons);
+  const { searchTerm, testErrorThrow } = useAppSelector(state => state.pokemons);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const pageFromUrl: number = Number(searchParams.get('page') ?? 1);
   const isDetails = useMatch('/details/:name');
   const navigate = useNavigate();
+  const pagedQuery = useGetPokemonsPagedQuery({ page: pageFromUrl }, { skip: !!searchTerm },);
+  const searchQuery = useGetPokemonByNameQuery(searchTerm, { skip: !searchTerm },);
+  const activeQuery = searchTerm ? searchQuery : pagedQuery;
+  const error = activeQuery.error && 'status' in activeQuery.error ? `HTTP Error: ${activeQuery.error.status}` : null;
 
-  useEffect(() => {
-    appDispatcher(getPokemons({ name: searchTerm, page: pageFromUrl }));
-  }, [searchTerm, pageFromUrl, appDispatcher]);
+  const items = activeQuery.data?.items ?? [];
+  const total = activeQuery.data?.total ?? 0;
+  const isLoading = activeQuery.isLoading;
 
   const handleSearch = (input: string) => {
     if (input === searchTerm) return;
