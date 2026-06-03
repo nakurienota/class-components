@@ -23,7 +23,7 @@ function Search({ onSearch }: Readonly<SearchProperties>) {
         value={value}
         onChange={handleChange}
         onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-        placeholder="placehodler"
+        placeholder="Поиск"
       />
       <button onClick={handleSearch}>Search</button>
     </div>

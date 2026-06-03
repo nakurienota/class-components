@@ -1,5 +1,5 @@
 function Spinner() {
-  return <div className="spinner">Imitating loading...</div>;
+  return <div className="spinner">Loading...</div>;
 }
 
 export default Spinner;

@@ -46,7 +46,7 @@ export interface ErrorState {
 export interface ResultSectionProperties {
   items: ItemDisplay[];
   isLoading: boolean;
-  error: string | null;
+  error: string | null | undefined;
   shouldThrow: boolean;
   onItemClick: (name: string) => void;
 }

@@ -7,12 +7,33 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { configureStore } from '@reduxjs/toolkit';
 import pokemonStore from '../../../redux/stores/PokemonStore.ts';
 import { Provider } from 'react-redux';
+import { pokemonApi, useGetPokemonByNameQuery, useGetPokemonsPagedQuery } from '../../../service/rest/PokemonApi.tsx';
 
 vi.mock('../../../core/utils/DummyDelay.tsx', () => ({
   delay: vi.fn().mockResolvedValue(undefined), // всегда резолвится мгновенно
 }));
 
-const createTestStore = () => configureStore({ reducer: { pokemons: pokemonStore } });
+const createTestStore = () =>
+  configureStore({
+    reducer: {
+      pokemons: pokemonStore,
+      [pokemonApi.reducerPath]: pokemonApi.reducer,
+    },
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().concat(pokemonApi.middleware),
+  });
+
+vi.mock('../../../service/rest/PokemonApi', async () => {
+  const actual = await vi.importActual<
+    typeof import('../../../service/rest/PokemonApi')
+  >('../../../service/rest/PokemonApi');
+
+  return {
+    ...actual,
+    useGetPokemonsPagedQuery: vi.fn(),
+    useGetPokemonByNameQuery: vi.fn(),
+  };
+});
 
 const renderWithRouter = (initialPath = '/') => {
   return render(
@@ -34,17 +55,16 @@ describe('MainPage', () => {
   });
 
   it('content should be rendered', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        results: [{ name: 'test', url: 'testUrl' }],
-        count: 1,
-      }),
-    } as Response);
+    vi.mocked(useGetPokemonsPagedQuery).mockReturnValue({
+      data: {
+        items: [{ name: 'test', description: 'testUrl' }],
+        total: 1,
+      },
+      isLoading: false,
+      error: null,
+    } as never);
 
     renderWithRouter();
-
-    expect(screen.getByText('Imitating loading...')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.getByText('test')).toBeInTheDocument();
@@ -54,59 +74,37 @@ describe('MainPage', () => {
   it('error boundary should render on 500 error', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {
     });
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
-      ok: false,
-      status: 500,
-    } as Response);
+    vi.mocked(useGetPokemonsPagedQuery).mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      error: {
+        status: 500,
+      },
+    } as never);
 
     renderWithRouter();
 
     await waitFor(() => {
-      expect(screen.getByText('Something goes wrong')).toBeInTheDocument();
+      expect(screen.getByText('Server is unavailable')).toBeInTheDocument();
     });
-    expect(screen.getByText('HTTP Error: 500')).toBeInTheDocument();
   });
 
   it('data should be render when search is invoked', async () => {
-    vi.spyOn(globalThis, 'fetch')
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ results: [], count: 0 }),
-      } as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ name: 'test', base_experience: 1 }),
-      } as Response);
+    const pagedMock = vi.mocked(useGetPokemonsPagedQuery);
+    const searchMock = vi.mocked(useGetPokemonByNameQuery);
+
+    pagedMock.mockReturnValue({ data: { items: [], total: 0 }, isLoading: false, error: null } as never);
+    searchMock.mockReturnValue({ data: undefined, isLoading: false, error: null } as never);
 
     renderWithRouter();
+
+    searchMock.mockReturnValue({ data: { items: [{ name: 'test', description: 'Base exp: 1' }], total: 1 }, isLoading: false, error: null, } as never);
 
     const input = screen.getByRole('textbox');
-    const button = screen.getByRole('button', { name: /search/i });
 
     await userEvent.type(input, 'test');
-    await userEvent.click(button);
+    await userEvent.click(screen.getByRole('button', { name: /search/i }));
 
-    await waitFor(() => {
-      expect(screen.getByText('test')).toBeInTheDocument();
-    });
-  });
-
-  it('error screen should render when the test error button is clicked', async () => {
-    vi.spyOn(console, 'error').mockImplementation(() => {
-    });
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
-      ok: true,
-      json: async () => ({ results: [], count: 0 }),
-    } as Response);
-
-    renderWithRouter();
-
-    await userEvent.click(
-      screen.getByRole('button', { name: /test error/i }),
-    );
-
-    await waitFor(() => {
-      expect(screen.getByText('Something goes wrong')).toBeInTheDocument();
-    });
+    expect(await screen.findByText('test')).toBeInTheDocument();
   });
 });

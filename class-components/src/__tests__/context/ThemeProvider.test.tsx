@@ -5,9 +5,9 @@ import { ThemeProvider } from '../../context/ThemeProvider.tsx';
 import { useTheme } from '../../context/UseTheme.tsx';
 
 vi.mock('../../../context/UseTheme', async () => {
-  return await vi.importActual<any>(
-    '../../../context/UseTheme',
-  );
+  return await vi.importActual<
+    typeof import('../../context/UseTheme')
+  >('../../../context/UseTheme');
 });
 
 function TestComponent() {

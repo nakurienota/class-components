@@ -5,6 +5,7 @@ import App from '../App';
 import pokemonStore from '../redux/stores/PokemonStore.ts';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
+import { pokemonApi } from '../service/rest/PokemonApi.tsx';
 
 vi.mock('../core/utils/DummyDelay', () => ({
   delay: vi.fn().mockResolvedValue(undefined),
@@ -17,7 +18,15 @@ vi.mock('../context/UseTheme.tsx', () => ({
   }),
 }));
 
-const createTestStore = () => configureStore({ reducer: { pokemons: pokemonStore } });
+const createTestStore = () =>
+  configureStore({
+    reducer: {
+      pokemons: pokemonStore,
+      [pokemonApi.reducerPath]: pokemonApi.reducer,
+    },
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().concat(pokemonApi.middleware),
+  });
 
 const renderApp = (initialPath = '/') =>
   render(

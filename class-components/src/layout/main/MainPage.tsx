@@ -1,4 +1,3 @@
-import { useEffect} from 'react';
 import Search from '../../components/search/Search.tsx';
 import ErrorBoundary from '../../core/error/ErrorBoundary.tsx';
 import ResultSection from '../../components/result/ResultSection.tsx';
@@ -6,31 +5,38 @@ import Pagination from '../../components/pagination/Pagination.tsx';
 import { Outlet, useMatch, useNavigate, useSearchParams } from 'react-router-dom';
 import './MainPage.scss';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks/hooks.ts';
-import { getPokemons, setCurrentPage, setSearchTerm, setTestErrorThrow } from '../../redux/stores/PokemonStore.ts';
+import { setCurrentPage, setSearchTerm } from '../../redux/stores/PokemonStore.ts';
 import Flyout from '../../components/flyout/Flyout.tsx';
+import {
+  useGetPokemonByNameQuery,
+  useGetPokemonsPagedQuery,
+  useRefreshPokemonsMutation,
+} from '../../service/rest/PokemonApi';
+import { type FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
 const PAGE_SIZE = 10;
 
 function MainPage() {
   const appDispatcher = useAppDispatch();
-  const { items, isLoading, error, searchTerm, total, testErrorThrow} = useAppSelector(state => state.pokemons);
+  const { searchTerm, testErrorThrow } = useAppSelector(state => state.pokemons);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const pageFromUrl: number = Number(searchParams.get('page') ?? 1);
   const isDetails = useMatch('/details/:name');
   const navigate = useNavigate();
-
-  useEffect(() => {
-    appDispatcher(getPokemons({ name: searchTerm, page: pageFromUrl }));
-  }, [searchTerm, pageFromUrl, appDispatcher]);
+  const pagedQuery = useGetPokemonsPagedQuery({ page: pageFromUrl }, { skip: !!searchTerm });
+  const searchQuery = useGetPokemonByNameQuery(searchTerm, { skip: !searchTerm });
+  const activeQuery = searchTerm ? searchQuery : pagedQuery;
+  const error = activeQuery.error ? mapError(activeQuery.error) : null;
+  const items = activeQuery.data?.items ?? [];
+  const total = activeQuery.data?.total ?? 0;
+  const isLoading = activeQuery.isLoading || activeQuery.isFetching;
 
   const handleSearch = (input: string) => {
     if (input === searchTerm) return;
     appDispatcher(setSearchTerm(input));
     setSearchParams({ page: '1' });
   };
-
-  const throwError = () => appDispatcher(setTestErrorThrow(true));
 
   const handlePageChange = (newPage: number) => {
     appDispatcher(setCurrentPage(newPage));
@@ -44,6 +50,26 @@ function MainPage() {
   const handleItemClick = (itemName: string) => {
     navigate(`/details/${itemName}?page=${pageFromUrl}`);
   };
+
+  function mapError(error: unknown) {
+    if (!error) return null;
+    if (isFetchError(error)) {
+      switch (error.status) {
+        case 404:
+          return 'Nothing found';
+        case 500:
+          return 'Server is unavailable';
+        default:
+          return 'Unexpected error';
+      }
+    }
+  }
+
+  function isFetchError(error: unknown): error is FetchBaseQueryError {
+    return (typeof error === 'object' && error !== null && 'status' in error);
+  }
+
+  const [refresh] = useRefreshPokemonsMutation();
 
   return (
     <div className="items-wrapper">
@@ -64,9 +90,9 @@ function MainPage() {
           <Outlet />
         </section>)}
       </div>
-      <button className="error-btn" onClick={throwError}>
-        Test error
-      </button>
+        <button className="error-btn" onClick={() => refresh()}>
+          Invalidate cache
+        </button>
       <Flyout />
     </div>
   );
