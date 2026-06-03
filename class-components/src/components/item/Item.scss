@@ -2,6 +2,7 @@
 
 .item {
   display: flex;
+  flex-direction: row;
   border: 1px solid v.$primary-gray;
   border-radius: v.$border-radius-base;
   padding: 4px;
@@ -11,6 +12,12 @@
 
   &:hover {
     border-color: v.$primary-blue;
+  }
+
+  &__text {
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
   }
 
   p:first-child {
@@ -27,6 +34,8 @@
   }
 
   input {
-    background-color: #49d0ff;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
   }
 }

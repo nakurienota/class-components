@@ -7,6 +7,6 @@ describe('Spinner', () => {
   it('renders spinner', () => {
     render(<Spinner />);
 
-    expect(screen.getByText('Imitating loading...')).toBeInTheDocument();
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 });

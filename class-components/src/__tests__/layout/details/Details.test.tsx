@@ -27,7 +27,7 @@ describe('DetailsPage', () => {
 
     renderWithRouter('pikachu');
 
-    expect(screen.getByText('Imitating loading...')).toBeInTheDocument();
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.getByText('pikachu')).toBeInTheDocument();
@@ -56,6 +56,6 @@ describe('DetailsPage', () => {
 
     renderWithRouter('pikachu');
 
-    expect(screen.getByText('Imitating loading...')).toBeInTheDocument();
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 });

@@ -16,7 +16,7 @@ vi.mock('../../redux/hooks/hooks', () => ({
 describe('ResultSection', () => {
   it('shows spinner when loading', () => {
     render(<ResultSection items={[]} isLoading={true} error={null} shouldThrow={false} onItemClick={() => {}}/>);
-    expect(screen.getByText('Imitating loading...')).toBeInTheDocument();
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
   it('shows not found when 404 error', () => {

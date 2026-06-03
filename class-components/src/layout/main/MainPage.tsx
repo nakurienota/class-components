@@ -29,7 +29,7 @@ function MainPage() {
 
   const items = activeQuery.data?.items ?? [];
   const total = activeQuery.data?.total ?? 0;
-  const isLoading = activeQuery.isLoading;
+  const isLoading = activeQuery.isLoading || activeQuery.isFetching;
 
   const handleSearch = (input: string) => {
     if (input === searchTerm) return;
