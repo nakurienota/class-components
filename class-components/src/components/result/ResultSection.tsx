@@ -4,12 +4,11 @@ import ItemList from '../item-list/ItemList.tsx';
 
 function ResultSection({ items, isLoading, error, shouldThrow, onItemClick  }: Readonly<ResultSectionProperties>) {
   if (shouldThrow) throw new Error('Test error appeared');
-  else if (error && error !== 'HTTP Error: 404') throw new Error(error);
 
   return (
     <>
       {isLoading && <Spinner />}
-      {error === 'HTTP Error: 404' && (<p className="not-found">Nothing found</p>)}
+      {error && (<div className="error">{error}</div>)}
       {!isLoading && !error && <ItemList items={items} onItemClick={onItemClick}  />}
     </>
   );

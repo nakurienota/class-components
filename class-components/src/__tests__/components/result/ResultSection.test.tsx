@@ -20,7 +20,7 @@ describe('ResultSection', () => {
   });
 
   it('shows not found when 404 error', () => {
-    render(<ResultSection items={[]} isLoading={false} error="HTTP Error: 404" shouldThrow={false} onItemClick={() => {}}/>);
+    render(<ResultSection items={[]} isLoading={false} error="Nothing found" shouldThrow={false} onItemClick={() => {}}/>);
     expect(screen.getByText('Nothing found')).toBeInTheDocument();
   });
 

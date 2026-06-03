@@ -85,9 +85,8 @@ describe('MainPage', () => {
     renderWithRouter();
 
     await waitFor(() => {
-      expect(screen.getByText('Something goes wrong')).toBeInTheDocument();
+      expect(screen.getByText('Server is unavailable')).toBeInTheDocument();
     });
-    expect(screen.getByText('HTTP Error: 500')).toBeInTheDocument();
   });
 
   it('data should be render when search is invoked', async () => {
